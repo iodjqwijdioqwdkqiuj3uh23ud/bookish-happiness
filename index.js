@@ -33,14 +33,20 @@ const commands = [
 ];
 
 const rest = new REST({ version: '10' }).setToken(TOKEN);
-
 client.once('ready', async () => {
     console.log(`🟢 ${client.user.tag} 로그인 성공!`);
+
+    // ready 이벤트 안에서 REST 객체 생성
+    const rest = new REST({ version: '10' }).setToken(process.env.DISCORD_TOKEN);
+
     try {
-        await rest.put(Routes.applicationCommands(CLIENT_ID), { body: commands });
+        await rest.put(
+            Routes.applicationCommands(process.env.CLIENT_ID), 
+            { body: commands }
+        );
         console.log('✅ 슬래시 명령어 등록 완료!');
     } catch (error) {
-        console.error(error);
+        console.error('❌ 슬래시 명령어 등록 실패:', error);
     }
 });
 
