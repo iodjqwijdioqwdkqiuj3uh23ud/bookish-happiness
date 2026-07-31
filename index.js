@@ -1,3 +1,5 @@
+require('dotenv').config(); // 1. 환경변수(.env) 로드 필수!
+
 const { 
     Client, 
     GatewayIntentBits, 
@@ -15,14 +17,15 @@ const client = new Client({
     intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers]
 });
 
-const TOKEN = 'process.env.DISCORD_TOKEN';
-const CLIENT_ID = 'process.env.DISCORD_CLIENT_ID';
+// 2. 따옴표 없이 process.env에서 직접 가져오기!
+const TOKEN = process.env.DISCORD_TOKEN;
+const CLIENT_ID = process.env.CLIENT_ID;
 
 // 역할 이름 설정
 const ROLE_1GUP = "1급 (현역)";
 const ROLE_4GUP = "4급 (사회복무요원)";
 
-// 1. 슬래시 명령어 등록
+// 1. 슬래시 명령어 정의
 const commands = [
     new SlashCommandBuilder()
         .setName('신체검사')
@@ -32,16 +35,20 @@ const commands = [
         .setDescription('본인의 복무 정보를 확인합니다.')
 ];
 
-const rest = new REST({ version: '10' }).setToken(TOKEN);
 client.once('ready', async () => {
     console.log(`🟢 ${client.user.tag} 로그인 성공!`);
 
-    // ready 이벤트 안에서 REST 객체 생성
-    const rest = new REST({ version: '10' }).setToken(process.env.DISCORD_TOKEN);
+    // 환경변수 값이 비어있는지 확인
+    if (!CLIENT_ID) {
+        console.error("❌ [오류] CLIENT_ID가 환경변수 설정에 없습니다!");
+        return;
+    }
+
+    const rest = new REST({ version: '10' }).setToken(TOKEN);
 
     try {
         await rest.put(
-            Routes.applicationCommands(process.env.CLIENT_ID), 
+            Routes.applicationCommands(CLIENT_ID), 
             { body: commands }
         );
         console.log('✅ 슬래시 명령어 등록 완료!');
@@ -177,4 +184,12 @@ client.on('interactionCreate', async (interaction) => {
     }
 });
 
-client.login(process.env.DISCORD_TOKEN);
+// 3. 토큰 검사 후 로그인
+if (!TOKEN) {
+    console.error("❌ 오류: DISCORD_TOKEN이 환경변수에 설정되지 않았습니다!");
+    process.exit(1);
+}
+
+client.login(TOKEN).catch(err => {
+    console.error("❌ 로그인 실패: 토큰이 올바른지 확인해 주세요.", err);
+});
