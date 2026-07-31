@@ -1,0 +1,20 @@
+{
+  "name": "military-discord-bot",
+  "version": "1.0.0",
+  "description": "대한민국 병무청 컨셉 디스코드 봇",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "keywords": [
+    "discord",
+    "bot",
+    "discord.js"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "discord.js": "^14.14.1",
+    "dotenv": "^16.4.5"
+  }
+}
