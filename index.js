@@ -16,7 +16,7 @@ const client = new Client({
 });
 
 const TOKEN = 'process.env.DISCORD_TOKEN';
-const CLIENT_ID = '1532602867364659330';
+const CLIENT_ID = 'process.env.DISCORD_CLIENT';
 
 // 역할 이름 설정
 const ROLE_1GUP = "1급 (현역)";
